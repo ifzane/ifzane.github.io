@@ -600,7 +600,7 @@ function render() {
         fill="rgba(167,139,250,0.85)" font-weight="600">D1 ↑ / D2 ↓</text>
  
   <!-- DIRECT PATH: Striatum D1-MSN → GPi (inhibitory, direct) -->
-  <line x1="${cx('str')}" y1="${bot('str')}"
+  <line x1="${cx('gpi')}" y1="${bot('str')}"
         x2="${cx('gpi')}"  y2="${top('gpi')}"
         stroke="rgba(59,130,246,${edgeAlpha(directStrength)})" stroke-width="${edgeW(directStrength)}"
         marker-end="url(#arr-dir)" stroke-linecap="round"/>
@@ -608,7 +608,7 @@ function render() {
         font-size="9" fill="rgba(59,130,246,0.7)" font-weight="600">GABA</text>
  
   <!-- INDIRECT PATH: Striatum D2-MSN → GPe (inhibitory) -->
-  <line x1="${cx('str')+30}" y1="${bot('str')}"
+  <line x1="${cx('gpe')}" y1="${bot('str')}"
         x2="${cx('gpe')}"     y2="${top('gpe')}"
         stroke="rgba(249,115,22,${edgeAlpha(indirectStrength)})" stroke-width="${edgeW(indirectStrength)}"
         marker-end="url(#arr-ind)" stroke-linecap="round"/>
@@ -625,7 +625,7 @@ function render() {
         marker-end="url(#arr-exc)" stroke-linecap="round"/>
  
   <!-- GPe → GPi (inhibitory, indirect route) -->
-  <path d="M${cx('gpe')} ${bot('gpe')} Q${cx('gpe')-40} ${(bot('gpe')+top('gpi'))/2} ${left('gpi')-4} ${cy('gpi')}"
+  <path d="M${cx('gpe')} ${bot('gpe')} Q${cx('gpe')-40} ${(bot('gpe')+top('gpi'))/2} ${right('gpi')} ${top('gpi')}"
         fill="none" stroke="${iC}" stroke-width="${edgeW(a.gpe,1)}"
         stroke-dasharray="4 3" marker-end="url(#arr-inh)" stroke-linecap="round" opacity="0.5"/>
  
