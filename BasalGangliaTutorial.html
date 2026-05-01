@@ -486,7 +486,7 @@ function calcActivity() {
  
   const gpe  = Math.max(0.05, 0.9  - d2 * 0.85);
   const stn  = Math.max(0.05, 0.85 - gpe * 0.75);
-  const gpi  = Math.max(0.05, Math.min(0.98, 0.5 + stn * 0.4 - d1 * 0.55));
+  const gpi  = Math.max(0.05, Math.min(0.98, 0.5 + stn * 0.6 - d1 * 0.55));
   const thal = Math.max(0.05, 0.95 - gpi * 0.85);
   const ctx  = cortexHigh ? 0.9 : 0.2;
   const snpc = daLevel;
