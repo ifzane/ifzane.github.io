@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basal Ganglia: Dopamine Pathways</title>
+<style>
+  /* ── Fonts & Reset ─────────────────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --bg:        #0e1117;
+    --bg2:       #161b24;
+    --bg3:       #1e2535;
+    --border:    rgba(255,255,255,0.10);
+    --border2:   rgba(255,255,255,0.18);
+    --text:      #d4dae8;
+    --text-dim:  #7a849a;
+    --text-head: #eef2ff;
+    --exc:       #34c77b;
+    --exc-dim:   rgba(52,199,123,0.18);
+    --inh:       #e05270;
+    --inh-dim:   rgba(224,82,112,0.18);
+    --da:        #a78bfa;
+    --da-dim:    rgba(167,139,250,0.18);
+    --active:    #f59e0b;
+    --direct:    #3b82f6;
+    --indirect:  #f97316;
+    --sans:      'IBM Plex Sans', system-ui, sans-serif;
+    --mono:      'IBM Plex Mono', monospace;
+  }
+ 
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  /* ── Header ────────────────────────────────────────────── */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-head);
+    letter-spacing: -0.01em;
+  }
+  header p {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+ 
+  /* ── Layout ────────────────────────────────────────────── */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 24px 20px;
+    gap: 20px;
+    align-items: start;
+  }
+ 
+  /* ── Sidebar ───────────────────────────────────────────── */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+ 
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 10px 14px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .panel-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+ 
+  button {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s, border-color .15s, color .15s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  button:hover { background: var(--bg3); border-color: var(--border2); }
+ 
+  button.btn-group {
+    display: inline-flex;
+    width: auto;
+    padding: 6px 12px;
+  }
+ 
+  .btn-row {
+    display: flex;
+    gap: 6px;
+  }
+ 
+  button.active-exc  { background: rgba(52,199,123,.15); border-color: var(--exc); color: var(--exc); }
+  button.active-inh  { background: rgba(224,82,112,.15); border-color: var(--inh); color: var(--inh); }
+  button.active-da   { background: rgba(167,139,250,.15); border-color: var(--da); color: var(--da); }
+  button.active-warn { background: rgba(245,158,11,.15); border-color: var(--active); color: var(--active); }
+  button.active-blue { background: rgba(59,130,246,.15); border-color: #3b82f6; color: #3b82f6; }
+  button.active-neu  { background: rgba(156,163,175,.15); border-color: #9ca3af; color: #9ca3af; }
+ 
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+ 
+  /* ── Slider ─────────────────────────────────────────────── */
+  .slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .slider-label span:last-child {
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--da);
+    cursor: pointer;
+  }
+ 
+  /* ── Legend ─────────────────────────────────────────────── */
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 3px 0;
+  }
+  .legend-line {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .legend-line.dashed {
+    background: transparent;
+    border-top: 2px dashed var(--da);
+    height: 0;
+  }
+ 
+  /* ── Info box ───────────────────────────────────────────── */
+  .info-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    min-height: 80px;
+  }
+  .info-panel strong {
+    color: var(--text-head);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+  .info-panel .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 1px 7px;
+    border-radius: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .tag-exc  { background: var(--exc-dim); color: var(--exc); }
+  .tag-inh  { background: var(--inh-dim); color: var(--inh); }
+  .tag-da   { background: var(--da-dim);  color: var(--da); }
+  .tag-dir  { background: rgba(59,130,246,.18); color: #60a5fa; }
+  .tag-ind  { background: rgba(249,115,22,.18); color: #fb923c; }
+ 
+  /* ── SVG canvas ─────────────────────────────────────────── */
+  .canvas-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+ 
+  /* Path labels */
+  .path-badges {
+    display: flex;
+    gap: 10px;
+  }
+  .path-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: var(--mono);
+    letter-spacing: .04em;
+    transition: all .3s;
+  }
+  .badge-direct   { border-color: var(--direct);   color: var(--direct);   background: rgba(59,130,246,.10); }
+  .badge-indirect { border-color: var(--indirect); color: var(--indirect); background: rgba(249,115,22,.10); }
+  .badge-dim { opacity: 0.35; }
+ 
+  #bgsvg { display: block; width: 100%; cursor: default; }
+  .node-g { cursor: pointer; }
+  .node-g:hover rect { filter: brightness(1.2); }
+ 
+  /* ── Status bar ─────────────────────────────────────────── */
+  .status-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+  }
+  .stat-card .label { font-size: 10px; color: var(--text-dim); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+  .stat-card .value { font-size: 15px; font-weight: 600; font-family: var(--mono); }
+ 
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 760px) {
+    main { grid-template-columns: 1fr; padding: 12px; }
+    .sidebar { flex-direction: row; flex-wrap: wrap; }
+    .sidebar .panel { flex: 1 1 200px; }
+  }
+ 
+  /* ── Tooltip ─────────────────────────────────────────────── */
+  #tooltip {
+    position: fixed;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    color: var(--text);
+    pointer-events: none;
+    display: none;
+    max-width: 220px;
+    z-index: 100;
+    line-height: 1.5;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+</style>
+</head>
+<body>
+ 
+<header>
+  <h1>Basal Ganglia — Dopamine Pathways</h1>
+  <p>Interactive model of direct &amp; indirect pathways · Click any structure to learn more</p>
+</header>
+ 
+<main>
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+ 
+    <div class="panel">
+      <div class="panel-header">Cortical Input</div>
+      <div class="panel-body">
+        <div class="btn-row">
+          <button class="btn-group active-inh" id="btn-ctx-low" onclick="setCortex('low')">
+            <div class="dot" style="background:var(--inh)"></div> Low
+          </button>
+          <button class="btn-group active-exc" id="btn-ctx-high" onclick="setCortex('high')" style="background:var(--exc-dim);border-color:var(--exc);color:var(--exc)">
+            <div class="dot" style="background:var(--exc)"></div> High
+          </button>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:2px">Glutamatergic drive to striatum</div>
+      </div>
+    </div>
+ 
+    <div class="panel">
+      <div class="panel-header">Dopamine (SNpc output)</div>
+      <div class="panel-body">
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>DA level</span>
+            <span id="da-val">65%</span>
+          </div>
+          <input type="range" id="da-slider" min="0" max="100" value="65"
+                 oninput="setDASlider(this.value)">
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);line-height:1.5;margin-top:2px">
+          <span style="color:var(--direct);font-weight:600">D1</span>: DA enhances direct path &nbsp;|&nbsp;
+          <span style="color:var(--indirect);font-weight:600">D2</span>: DA suppresses indirect path
+        </div>
+      </div>
+    </div>
+ 
+    <div class="panel">
+      <div class="panel-header">Disease Presets</div>
+      <div class="panel-body">
+        <button id="btn-pd" onclick="setDisease('pd')">
+          <div class="dot" style="background:#f59e0b"></div>
+          Parkinson's disease
+        </button>
+        <button id="btn-hd" onclick="setDisease('hd')">
+          <div class="dot" style="background:#e05270"></div>
+          Huntington's disease
+        </button>
+        <button id="btn-levo" onclick="setDisease('levodopa')">
+          <div class="dot" style="background:#a78bfa"></div>
+          L-DOPA treatment
+        </button>
+        <button id="btn-reset" onclick="setDisease('none')">
+          <div class="dot" style="background:#6b7280"></div>
+          Reset to normal
+        </button>
+      </div>
+    </div>
+ 
+    <div class="panel">
+      <div class="panel-header">Legend</div>
+      <div class="panel-body">
+        <div class="legend-item"><div class="legend-line" style="background:var(--exc)"></div> Excitatory (glutamate)</div>
+        <div class="legend-item"><div class="legend-line" style="background:var(--inh)"></div> Inhibitory (GABA)</div>
+        <div class="legend-item"><div class="legend-line dashed"></div> Dopamine modulation</div>
+        <div class="legend-item"><div class="dot" style="background:var(--exc)"></div> High activity</div>
+        <div class="legend-item"><div class="dot" style="background:var(--active)"></div> Moderate activity</div>
+        <div class="legend-item"><div class="dot" style="background:#6b7280"></div> Low activity</div>
+      </div>
+    </div>
+ 
+  </aside>
+ 
+  <!-- ── CANVAS ── -->
+  <div class="canvas-wrap">
+ 
+    <div class="path-badges">
+      <span class="path-badge badge-direct" id="badge-direct">DIRECT PATH — movement facilitation</span>
+      <span class="path-badge badge-indirect" id="badge-indirect">INDIRECT PATH — movement suppression</span>
+    </div>
+ 
+    <svg id="bgsvg" viewBox="0 0 660 560"></svg>
+ 
+    <div class="status-row">
+      <div class="stat-card">
+        <div class="label">Thalamic output</div>
+        <div class="value" id="stat-thal" style="color:var(--exc)">HIGH</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Movement readiness</div>
+        <div class="value" id="stat-move" style="color:var(--exc)">READY</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">GPi/SNpr tone</div>
+        <div class="value" id="stat-gpi" style="color:var(--active)">MOD</div>
+      </div>
+    </div>
+ 
+    <div class="info-panel" id="info-box">
+      <strong>Click any structure to explore it</strong>
+      Use the controls on the left to adjust cortical input and dopamine levels. Try the disease presets to see how each condition shifts the balance between the direct and indirect pathways.
+    </div>
+ 
+  </div>
+</main>
+ 
+<div id="tooltip"></div>
+ 
+<script>
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const state = { cortex: 'high', da: 65, disease: 'none' };
+ 
+/* ══════════════════════════════════════════════
+   STRUCTURE DATA
+══════════════════════════════════════════════ */
+const STRUCTS = {
+  ctx:  { x:190, y:20,  w:280, h:48, label:'Cerebral Cortex',   sub:'Glutamate → striatum' },
+  str:  { x:130, y:120, w:280, h:48, label:'Striatum',           sub:'D1-MSN (direct) · D2-MSN (indirect)' },
+  snpc: { x:460, y:120, w:150, h:48, label:'SNpc',               sub:'Dopamine source' },
+  gpe:  { x:200, y:240, w:140, h:48, label:'GPe',                sub:'Indirect relay' },
+  stn:  { x:410, y:240, w:140, h:48, label:'STN',                sub:'DBS target in PD' },
+  gpi:  { x:130, y:360, w:150, h:48, label:'GPi / SNpr',         sub:'BG output nucleus' },
+  thal: { x:200, y:470, w:260, h:48, label:'Thalamus',           sub:'→ Motor / premotor / prefrontal cortex' },
+};
+ 
+const INFO = {
+  ctx:  {
+    title: 'Cerebral Cortex',
+    tags: ['excitatory','glutamate'],
+    text: 'The primary driver of the circuit. Sends glutamatergic projections to both D1-MSNs (direct path) and D2-MSNs (indirect path) in the striatum, as well as direct input to the STN (the "hyperdirect" pathway). 2/3 of thalamic output feeds back here — to prefrontal, premotor, and motor cortex.'
+  },
+  str: {
+    title: 'Striatum (Putamen & Caudate)',
+    tags: ['direct-path','indirect-path','da-target'],
+    text: 'Contains medium spiny neurons (MSNs), which are the input stage of the BG. D1-MSNs express D1 dopamine receptors and project via the direct path — dopamine excites them. D2-MSNs express D2 receptors and project via the indirect path — dopamine inhibits them. This dual modulation is the key to understanding how DA controls movement.'
+  },
+  snpc: {
+    title: 'SNpc — Substantia Nigra Pars Compacta',
+    tags: ['dopamine','modulation'],
+    text: 'The major source of striatal dopamine. Projects to both D1 and D2 MSNs via the nigrostriatal pathway. In Parkinson\'s disease, ~70-80% of SNpc neurons are lost before symptoms emerge. DA release acts like a "gain knob" — boosting the direct path while suppressing the indirect path, net effect: facilitating movement.'
+  },
+  gpe: {
+    title: 'GPe — Globus Pallidus Externa',
+    tags: ['inhibitory','gaba','indirect-path'],
+    text: 'A key relay in the indirect pathway. Receives GABAergic (inhibitory) input from D2-MSNs in the striatum and sends inhibitory projections to the STN. When dopamine is low (e.g., Parkinson\'s), D2-MSNs are overactive → GPe is over-inhibited → STN is released from inhibition → STN becomes overactive → GPi is hyperactive → thalamus is suppressed → reduced movement.'
+  },
+  stn: {
+    title: 'STN — Subthalamic Nucleus',
+    tags: ['excitatory','glutamate','indirect-path'],
+    text: 'The only glutamatergic (excitatory) nucleus in the BG. Receives inhibitory input from GPe and sends strong excitatory drive to GPi. In Parkinson\'s disease, STN is pathologically overactive — making it the primary target for Deep Brain Stimulation (DBS). High-frequency DBS (~130 Hz) effectively silences the overactive STN.'
+  },
+  gpi: {
+    title: 'GPi / SNpr — Basal Ganglia Output',
+    tags: ['inhibitory','gaba'],
+    text: 'The main output of the basal ganglia. Tonically fires GABAergic inhibition onto the thalamus. Direct path activation (via D1-MSNs) inhibits GPi → releases thalamus → facilitates movement (disinhibition). Indirect path activation → excites GPi → suppresses thalamus → suppresses movement. GPi is also targeted by pallidotomy and DBS in Parkinson\'s.'
+  },
+  thal: {
+    title: 'Thalamus (VLo/VA nuclei)',
+    tags: ['excitatory','glutamate'],
+    text: 'Receives GABAergic inhibition from GPi. When GPi activity is low (direct path dominant), the thalamus is released and can excite motor and premotor cortex — enabling voluntary movement. When GPi is hyperactive (Parkinson\'s, or indirect path dominant), thalamus is chronically inhibited → difficulty initiating movement (akinesia, bradykinesia).'
+  },
+};
+ 
+/* ══════════════════════════════════════════════
+   ACTIVITY CALCULATION
+══════════════════════════════════════════════ */
+function calcActivity() {
+  const da = state.da / 100;
+  const cortexHigh = state.cortex === 'high';
+  const cortexDrive = cortexHigh ? 0.9 : 0.2;
+ 
+  let daLevel = da;
+  if (state.disease === 'pd')       daLevel = 0.04;
+  else if (state.disease === 'hd')  daLevel = 0.65;
+  else if (state.disease === 'levodopa') daLevel = Math.min(1, da + 0.4);
+ 
+  const d1 = cortexDrive * (0.25 + daLevel * 0.75);
+  let d2   = cortexDrive * (0.85 - daLevel * 0.75);
+  if (state.disease === 'hd') d2 = cortexDrive * 0.1; // HD: striatal D2 MSN degeneration
+ 
+  const gpe  = Math.max(0.05, 0.9  - d2 * 0.85);
+  const stn  = Math.max(0.05, 0.85 - gpe * 0.75);
+  const gpi  = Math.max(0.05, Math.min(0.98, 0.5 + stn * 0.4 - d1 * 0.55));
+  const thal = Math.max(0.05, 0.95 - gpi * 0.85);
+  const ctx  = cortexHigh ? 0.9 : 0.2;
+  const snpc = daLevel;
+ 
+  return { ctx, snpc, str_d1: d1, str_d2: d2, gpe, stn, gpi, thal, da: daLevel };
+}
+ 
+/* ══════════════════════════════════════════════
+   COLOR HELPERS
+══════════════════════════════════════════════ */
+function actToColor(v) {
+  if (v > 0.68) return '#34c77b';
+  if (v > 0.38) return '#f59e0b';
+  return '#e05270';
+}
+function actToBg(v) {
+  if (v > 0.68) return 'rgba(52,199,123,0.14)';
+  if (v > 0.38) return 'rgba(245,158,11,0.14)';
+  return 'rgba(224,82,112,0.12)';
+}
+function actLabel(v) {
+  if (v > 0.68) return 'HIGH';
+  if (v > 0.38) return 'MOD';
+  return 'LOW';
+}
+ 
+/* ══════════════════════════════════════════════
+   SVG RENDER
+══════════════════════════════════════════════ */
+function render() {
+  const a = calcActivity();
+  const svg = document.getElementById('bgsvg');
+ 
+  const cx = k => STRUCTS[k].x + STRUCTS[k].w / 2;
+  const cy = k => STRUCTS[k].y + STRUCTS[k].h / 2;
+  const bot= k => STRUCTS[k].y + STRUCTS[k].h;
+  const top= k => STRUCTS[k].y;
+  const left =k => STRUCTS[k].x;
+  const right=k => STRUCTS[k].x + STRUCTS[k].w;
+ 
+  // Activity values per node
+  const acts = {
+    ctx:  a.ctx, snpc: a.snpc,
+    str:  Math.max(a.str_d1, a.str_d2),
+    gpe:  a.gpe, stn: a.stn,
+    gpi:  a.gpi, thal: a.thal,
+  };
+ 
+  function mkArrow(id, col) {
+    return `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>`;
+  }
+ 
+  const directStrength  = a.str_d1;
+  const indirectStrength = a.str_d2;
+  const daStr = a.da;
+ 
+  function edgeW(v, base=1.5) { return (base + v * 3).toFixed(1); }
+  function edgeAlpha(v, min=0.18) { return Math.max(min, v * 0.9 + 0.1).toFixed(2); }
+ 
+  // Path colors with activity-weighted opacity
+  const eC = `rgba(52,199,123,${edgeAlpha(0.8)})`;    // excitatory
+  const iC = `rgba(224,82,112,${edgeAlpha(0.8)})`;    // inhibitory
+  const dC = `rgba(167,139,250,${edgeAlpha(daStr)})`;  // dopamine
+ 
+  const dirC  = `rgba(59,130,246,${edgeAlpha(directStrength)})`;
+  const indC  = `rgba(249,115,22,${edgeAlpha(indirectStrength)})`;
+ 
+  const html = `
+  <defs>
+    ${mkArrow('arr-exc', '#34c77b')}
+    ${mkArrow('arr-inh', '#e05270')}
+    ${mkArrow('arr-da',  '#a78bfa')}
+    ${mkArrow('arr-dir', '#3b82f6')}
+    ${mkArrow('arr-ind', '#f97316')}
+  </defs>
+ 
+  <!-- ─── PATH BACKGROUND REGIONS ─── -->
+  <rect x="120" y="10" width="310" height="510" rx="14"
+    fill="rgba(59,130,246,${(directStrength * 0.07).toFixed(3)})"
+    stroke="rgba(59,130,246,${(directStrength * 0.25).toFixed(3)})"
+    stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="185" y="110" width="400" height="200" rx="14"
+    fill="rgba(249,115,22,${(indirectStrength * 0.06).toFixed(3)})"
+    stroke="rgba(249,115,22,${(indirectStrength * 0.22).toFixed(3)})"
+    stroke-width="1" stroke-dasharray="4 4"/>
+ 
+  <!-- PATH LABELS -->
+  <text x="134" y="520" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(59,130,246,${Math.max(0.3,directStrength).toFixed(2)})" font-weight="600" letter-spacing="0.06em">DIRECT</text>
+  <text x="414" y="295" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(249,115,22,${Math.max(0.3,indirectStrength).toFixed(2)})" font-weight="600" letter-spacing="0.06em">INDIRECT</text>
+ 
+  <!-- ─── CONNECTIONS ─── -->
+ 
+  <!-- Cortex → Striatum (excitatory, drives both paths) -->
+  <line x1="${cx('ctx')}" y1="${bot('ctx')}"
+        x2="${cx('str')}"  y2="${top('str')}"
+        stroke="${eC}" stroke-width="${edgeW(a.ctx)}"
+        marker-end="url(#arr-exc)" stroke-linecap="round"/>
+ 
+  <!-- Cortex → STN (hyperdirect) -->
+  <path d="M${right('ctx')+5} ${cy('ctx')} Q620 ${cy('ctx')} 620 ${cy('stn')} L${right('stn')+2} ${cy('stn')}"
+        fill="none" stroke="${eC}" stroke-width="${edgeW(a.ctx,1)}"
+        stroke-dasharray="5 3" marker-end="url(#arr-exc)" stroke-linecap="round" opacity="0.6"/>
+ 
+  <!-- SNpc → Striatum D1 (dopamine, direct path — dashed purple) -->
+  <path d="M${left('snpc')} ${cy('snpc')} Q${cx('snpc')-80} ${cy('str')+15} ${right('str')+3} ${cy('str')}"
+        fill="none" stroke="${dC}" stroke-width="${edgeW(daStr,1.2)}"
+        stroke-dasharray="5 3" marker-end="url(#arr-da)" stroke-linecap="round"/>
+  <text x="${cx('snpc')-72}" y="${cy('snpc')-14}" font-family="'IBM Plex Mono',monospace" font-size="9.5"
+        fill="rgba(167,139,250,0.85)" font-weight="600">D1 ↑ / D2 ↓</text>
+ 
+  <!-- DIRECT PATH: Striatum D1-MSN → GPi (inhibitory, direct) -->
+  <line x1="${cx('str')}" y1="${bot('str')}"
+        x2="${cx('gpi')}"  y2="${top('gpi')}"
+        stroke="rgba(59,130,246,${edgeAlpha(directStrength)})" stroke-width="${edgeW(directStrength)}"
+        marker-end="url(#arr-dir)" stroke-linecap="round"/>
+  <text x="${cx('str')+8}" y="${(bot('str')+top('gpi'))/2+4}" font-family="'IBM Plex Mono',monospace"
+        font-size="9" fill="rgba(59,130,246,0.7)" font-weight="600">GABA</text>
+ 
+  <!-- INDIRECT PATH: Striatum D2-MSN → GPe (inhibitory) -->
+  <line x1="${cx('str')+30}" y1="${bot('str')}"
+        x2="${cx('gpe')}"     y2="${top('gpe')}"
+        stroke="rgba(249,115,22,${edgeAlpha(indirectStrength)})" stroke-width="${edgeW(indirectStrength)}"
+        marker-end="url(#arr-ind)" stroke-linecap="round"/>
+ 
+  <!-- GPe → STN (inhibitory) -->
+  <line x1="${right('gpe')}" y1="${cy('gpe')}"
+        x2="${left('stn')}"  y2="${cy('stn')}"
+        stroke="${iC}" stroke-width="${edgeW(a.gpe)}"
+        marker-end="url(#arr-inh)" stroke-linecap="round"/>
+ 
+  <!-- STN → GPi (excitatory) -->
+  <path d="M${cx('stn')} ${bot('stn')} Q${cx('stn')} ${top('gpi')+24} ${right('gpi')+4} ${cy('gpi')}"
+        fill="none" stroke="${eC}" stroke-width="${edgeW(a.stn)}"
+        marker-end="url(#arr-exc)" stroke-linecap="round"/>
+ 
+  <!-- GPe → GPi (inhibitory, indirect route) -->
+  <path d="M${cx('gpe')} ${bot('gpe')} Q${cx('gpe')-40} ${(bot('gpe')+top('gpi'))/2} ${left('gpi')-4} ${cy('gpi')}"
+        fill="none" stroke="${iC}" stroke-width="${edgeW(a.gpe,1)}"
+        stroke-dasharray="4 3" marker-end="url(#arr-inh)" stroke-linecap="round" opacity="0.5"/>
+ 
+  <!-- GPi → Thalamus (inhibitory — BG output) -->
+  <line x1="${cx('gpi')}"  y1="${bot('gpi')}"
+        x2="${cx('thal')}" y2="${top('thal')}"
+        stroke="${iC}" stroke-width="${edgeW(a.gpi,2)}"
+        marker-end="url(#arr-inh)" stroke-linecap="round"/>
+  <text x="${cx('gpi')+10}" y="${(bot('gpi')+top('thal'))/2+4}" font-family="'IBM Plex Mono',monospace"
+        font-size="9" fill="rgba(224,82,112,0.75)" font-weight="600">GABA</text>
+ 
+  <!-- Thalamus → Cortex (excitatory feedback loop) -->
+  <path d="M${left('thal')-4} ${cy('thal')} Q80 ${cy('thal')} 80 ${cy('ctx')} L${left('ctx')-4} ${cy('ctx')}"
+        fill="none" stroke="${eC}" stroke-width="${edgeW(a.thal,1.2)}"
+        marker-end="url(#arr-exc)" stroke-linecap="round"/>
+  <text x="50" y="${(cy('thal')+cy('ctx'))/2}" font-family="'IBM Plex Mono',monospace"
+        font-size="9" fill="rgba(52,199,123,0.7)" font-weight="600"
+        transform="rotate(-90,50,${(cy('thal')+cy('ctx'))/2})">Motor ctx</text>
+ 
+  <!-- ─── NODES ─── -->
+  ${Object.entries(STRUCTS).map(([key, s]) => {
+    const v = acts[key];
+    const bg = actToBg(v);
+    const stroke = actToColor(v);
+    const isStr = key === 'str';
+    const d1c = actToColor(a.str_d1);
+    const d2c = actToColor(a.str_d2);
+    return `
+    <g class="node-g" data-key="${key}" onclick="showInfo('${key}')" role="button" aria-label="${s.label}">
+      <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="10"
+            fill="${bg}" stroke="${stroke}" stroke-width="1.5"/>
+      <text x="${s.x+s.w/2}" y="${s.y+17}" text-anchor="middle" dominant-baseline="middle"
+            font-family="'IBM Plex Sans',sans-serif" font-size="13" font-weight="600"
+            fill="${stroke}">${s.label}</text>
+      <text x="${s.x+s.w/2}" y="${s.y+33}" text-anchor="middle" dominant-baseline="middle"
+            font-family="'IBM Plex Sans',sans-serif" font-size="9.5" fill="rgba(160,170,190,0.8)">
+        ${isStr ? `D1 act: ${Math.round(a.str_d1*100)}%  ·  D2 act: ${Math.round(a.str_d2*100)}%` : s.sub}
+      </text>
+      ${key === 'snpc' ? `<text x="${s.x+s.w/2}" y="${s.y+33}" text-anchor="middle" dominant-baseline="middle"
+            font-family="'IBM Plex Mono',sans-serif" font-size="10" fill="rgba(167,139,250,0.9)">
+        DA: ${Math.round(a.da*100)}%
+      </text>` : ''}
+      <!-- activity dot -->
+      <circle cx="${s.x+s.w-14}" cy="${s.y+14}" r="5" fill="${stroke}" opacity="0.85"/>
+    </g>`;
+  }).join('')}
+ 
+  <!-- ─── D1/D2 receptor labels on striatum ─── -->
+  <text x="${STRUCTS.str.x+52}" y="${bot('str')+16}" font-family="'IBM Plex Mono',monospace"
+        font-size="9.5" fill="rgba(59,130,246,0.9)" font-weight="700">D1-MSN → direct</text>
+  <text x="${STRUCTS.str.x+155}" y="${bot('str')+16}" font-family="'IBM Plex Mono',monospace"
+        font-size="9.5" fill="rgba(249,115,22,0.9)" font-weight="700">D2-MSN → indirect</text>
+  `;
+ 
+  svg.innerHTML = html;
+ 
+  // Update stats
+  updateStats(a);
+}
+ 
+/* ══════════════════════════════════════════════
+   STATUS CARDS
+══════════════════════════════════════════════ */
+function updateStats(a) {
+  const thalEl  = document.getElementById('stat-thal');
+  const moveEl  = document.getElementById('stat-move');
+  const gpiEl   = document.getElementById('stat-gpi');
+ 
+  thalEl.textContent = actLabel(a.thal);
+  thalEl.style.color = actToColor(a.thal);
+ 
+  const move = a.thal > 0.6 ? 'READY' : a.thal > 0.35 ? 'REDUCED' : 'BLOCKED';
+  const moveColor = a.thal > 0.6 ? '#34c77b' : a.thal > 0.35 ? '#f59e0b' : '#e05270';
+  moveEl.textContent = move;
+  moveEl.style.color = moveColor;
+ 
+  gpiEl.textContent = actLabel(a.gpi);
+  gpiEl.style.color = actToColor(a.gpi);
+ 
+  // Path badges
+  const a_str = calcActivity();
+  document.getElementById('badge-direct').classList.toggle('badge-dim', a_str.str_d1 < 0.4);
+  document.getElementById('badge-indirect').classList.toggle('badge-dim', a_str.str_d2 < 0.4);
+}
+ 
+/* ══════════════════════════════════════════════
+   INFO BOX
+══════════════════════════════════════════════ */
+const TAG_MAP = {
+  excitatory: ['tag-exc', 'glutamate'],
+  glutamate:  ['tag-exc', 'Glu'],
+  inhibitory: ['tag-inh', 'inhibitory'],
+  gaba:       ['tag-inh', 'GABA'],
+  dopamine:   ['tag-da',  'DA'],
+  modulation: ['tag-da',  'neuromod'],
+  'direct-path':   ['tag-dir', 'direct'],
+  'indirect-path': ['tag-ind', 'indirect'],
+  'da-target':     ['tag-da',  'DA target'],
+};
+ 
+function showInfo(key) {
+  const info = INFO[key];
+  if (!info) return;
+  const tags = (info.tags || []).map(t => {
+    const m = TAG_MAP[t] || ['tag-exc', t];
+    return `<span class="tag ${m[0]}">${m[1]}</span>`;
+  }).join('');
+  document.getElementById('info-box').innerHTML =
+    `<strong>${info.title}</strong>${tags}<br>${info.text}`;
+}
+ 
+/* ══════════════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════════════ */
+function setCortex(v) {
+  state.cortex = v;
+  state.disease = 'none';
+  clearDiseaseButtons();
+  document.getElementById('btn-ctx-low').className  = 'btn-group' + (v==='low'  ? ' active-inh' : '');
+  document.getElementById('btn-ctx-high').className = 'btn-group' + (v==='high' ? ' active-exc' : '');
+  render();
+}
+ 
+function setDASlider(v) {
+  state.da = parseInt(v);
+  document.getElementById('da-val').textContent = v + '%';
+  state.disease = 'none';
+  clearDiseaseButtons();
+  render();
+}
+ 
+function clearDiseaseButtons() {
+  ['btn-pd','btn-hd','btn-levo','btn-reset'].forEach(id => {
+    document.getElementById(id).className = '';
+  });
+}
+ 
+function setDisease(d) {
+  state.disease = d;
+  clearDiseaseButtons();
+  const slider = document.getElementById('da-slider');
+  if (d === 'pd') {
+    state.da = 5;
+    state.cortex = 'high';
+    slider.value = 5;
+    document.getElementById('da-val').textContent = '5%';
+    document.getElementById('btn-pd').className = 'active-warn';
+    document.getElementById('info-box').innerHTML =
+      `<strong>Parkinson's Disease</strong><span class="tag tag-da">DA ↓↓</span><span class="tag tag-ind">indirect ↑</span><br>
+      Loss of SNpc dopaminergic neurons → severely reduced striatal DA. D1-MSNs under-activated (weak direct path) and D2-MSNs dis-inhibited (strong indirect path) → GPi hyperactivity → thalamic suppression → difficulty initiating and executing movement (bradykinesia, akinesia, rigidity). The STN becomes pathologically overactive, making it the key target for DBS.`;
+  } else if (d === 'hd') {
+    state.da = 65;
+    state.cortex = 'high';
+    slider.value = 65;
+    document.getElementById('da-val').textContent = '65%';
+    document.getElementById('btn-hd').className = 'active-inh';
+    document.getElementById('info-box').innerHTML =
+      `<strong>Huntington's Disease</strong><span class="tag tag-inh">D2-MSN loss</span><span class="tag tag-dir">direct imbalance</span><br>
+      Early HD selectively destroys D2-MSNs (indirect path neurons) in the striatum. Loss of indirect path inhibition means GPe is under-inhibited → STN is suppressed → GPi reduced → thalamus is over-released → excessive, involuntary movements (chorea). Later, D1-MSNs are also lost, explaining motor rigidity in late-stage HD.`;
+  } else if (d === 'levodopa') {
+    state.da = Math.min(100, state.da + 40);
+    slider.value = state.da;
+    document.getElementById('da-val').textContent = state.da + '%';
+    document.getElementById('btn-levo').className = 'active-da';
+    document.getElementById('info-box').innerHTML =
+      `<strong>L-DOPA (Levodopa) Treatment</strong><span class="tag tag-da">DA ↑↑</span><span class="tag tag-dir">direct ↑</span><span class="tag tag-ind">indirect ↓</span><br>
+      L-DOPA (converted to DA by DOPA decarboxylase) replenishes striatal dopamine. Restores D1 activation (strengthening the direct path) and D2 inhibition (weakening the indirect path), bringing GPi activity down toward normal. This relieves bradykinesia. However, long-term use leads to dyskinesias (excessive, involuntary movements) due to DA receptor sensitisation — effectively swinging too far toward Huntington's-like overactivation.`;
+  } else {
+    state.da = 65;
+    slider.value = 65;
+    document.getElementById('da-val').textContent = '65%';
+    state.cortex = 'high';
+    document.getElementById('btn-ctx-high').className = 'btn-group active-exc';
+    document.getElementById('btn-ctx-low').className = 'btn-group';
+    document.getElementById('info-box').innerHTML =
+      `<strong>Normal baseline</strong> — DA restored to 65%. Direct and indirect pathways are balanced, allowing smooth voluntary movement initiation and suppression.`;
+  }
+  render();
+}
+ 
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+document.getElementById('btn-ctx-high').className = 'btn-group active-exc';
+render();
+</script>
+</body>
