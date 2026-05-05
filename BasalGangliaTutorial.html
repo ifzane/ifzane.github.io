@@ -346,10 +346,6 @@
           <div class="dot" style="background:#f59e0b"></div>
           Parkinson's disease
         </button>
-        <button id="btn-hd" onclick="setDisease('hd')">
-          <div class="dot" style="background:#e05270"></div>
-          Huntington's disease
-        </button>
         <button id="btn-levo" onclick="setDisease('levodopa')">
           <div class="dot" style="background:#a78bfa"></div>
           L-DOPA treatment
@@ -433,17 +429,17 @@ const INFO = {
   ctx:  {
     title: 'Cerebral Cortex',
     tags: ['excitatory','glutamate'],
-    text: 'The primary driver of the circuit. Sends glutamatergic projections to both D1-MSNs (direct path) and D2-MSNs (indirect path) in the striatum, as well as direct input to the STN (the "hyperdirect" pathway). 2/3 of thalamic output feeds back here — to prefrontal, premotor, and motor cortex.'
+    text: 'The primary driver of the circuit. Sends glutamatergic projections to both D1-MSNs (direct path) and D2-MSNs (indirect path) in the striatum, as well as direct input to the STN (the "hyperdirect" pathway).'
   },
   str: {
     title: 'Striatum (Putamen & Caudate)',
     tags: ['direct-path','indirect-path','da-target'],
-    text: 'Contains medium spiny neurons (MSNs), which are the input stage of the BG. D1-MSNs express D1 dopamine receptors and project via the direct path — dopamine excites them. D2-MSNs express D2 receptors and project via the indirect path — dopamine inhibits them. This dual modulation is the key to understanding how DA controls movement.'
+    text: 'Contains medium spiny neurons (MSNs), which are the input stage of the BG. D1-MSNs express D1 dopamine receptors and project via the direct path: dopamine excites them. D2-MSNs express D2 receptors and project via the indirect path: dopamine inhibits them. This difference is how we get the two pathways and different responses.'
   },
   snpc: {
     title: 'SNpc — Substantia Nigra Pars Compacta',
     tags: ['dopamine','modulation'],
-    text: 'The major source of striatal dopamine. Projects to both D1 and D2 MSNs via the nigrostriatal pathway. In Parkinson\'s disease, ~70-80% of SNpc neurons are lost before symptoms emerge. DA release acts like a "gain knob" — boosting the direct path while suppressing the indirect path, net effect: facilitating movement.'
+    text: 'The major source of striatal dopamine. Projects to both D1 and D2 MSNs. In Parkinson\'s disease, these SNpc dopaminergic neurons are lost causing the effects we observe. DA release acts by boosting the direct path while suppressing the indirect path.'
   },
   gpe: {
     title: 'GPe — Globus Pallidus Externa',
@@ -453,17 +449,17 @@ const INFO = {
   stn: {
     title: 'STN — Subthalamic Nucleus',
     tags: ['excitatory','glutamate','indirect-path'],
-    text: 'The only glutamatergic (excitatory) nucleus in the BG. Receives inhibitory input from GPe and sends strong excitatory drive to GPi. In Parkinson\'s disease, STN is pathologically overactive — making it the primary target for Deep Brain Stimulation (DBS). High-frequency DBS (~130 Hz) effectively silences the overactive STN.'
+    text: 'An excitatory (glutamatergic) nucleus in the BG. Receives inhibitory input from GPe and sends strong excitatory drive to GPi.'
   },
   gpi: {
     title: 'GPi / SNpr — Basal Ganglia Output',
     tags: ['inhibitory','gaba'],
-    text: 'The main output of the basal ganglia. Tonically fires GABAergic inhibition onto the thalamus. Direct path activation (via D1-MSNs) inhibits GPi → releases thalamus → facilitates movement (disinhibition). Indirect path activation → excites GPi → suppresses thalamus → suppresses movement. GPi is also targeted by pallidotomy and DBS in Parkinson\'s.'
+    text: 'Tonically fires GABAergic inhibition onto the thalamus. Direct path activation (via D1-MSNs) inhibits GPi → releases thalamus → facilitates movement (disinhibition). Indirect path activation → excites GPi → suppresses thalamus → suppresses movement.'
   },
   thal: {
     title: 'Thalamus (VLo/VA nuclei)',
     tags: ['excitatory','glutamate'],
-    text: 'Receives GABAergic inhibition from GPi. When GPi activity is low (direct path dominant), the thalamus is released and can excite motor and premotor cortex — enabling voluntary movement. When GPi is hyperactive (Parkinson\'s, or indirect path dominant), thalamus is chronically inhibited → difficulty initiating movement (akinesia, bradykinesia).'
+    text: 'Receives GABAergic inhibition from GPi. When GPi activity is low (direct path dominant), the thalamus is released and can excite motor and premotor cortex — enabling voluntary movement. When GPi is hyperactive (indirect path dominant), thalamus is chronically inhibited → difficulty initiating movement (akinesia, bradykinesia).'
   },
 };
  
